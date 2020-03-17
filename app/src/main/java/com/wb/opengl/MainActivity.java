@@ -1,7 +1,7 @@
-package com.voice.wb.opengl;
+package com.wb.opengl;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 /**
