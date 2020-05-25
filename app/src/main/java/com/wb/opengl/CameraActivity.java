@@ -28,13 +28,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
-import android.view.OrientationEventListener;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wb.opengl.view.AutoAdapterTextureView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     //initView
     private TextView tv_pic;
     private TextView tv_video;
-    private TextureView mPrevoewSurface;
+    private AutoAdapterTextureView mPreviewSurface;
 
     private CameraManager mCameraManager;
     private CameraDevice mCameraDevice;
@@ -170,10 +170,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         tv_video = findViewById(R.id.tv_video);
         tv_pic.setOnClickListener(this);
         tv_video.setOnClickListener(this);
-        mPrevoewSurface = findViewById(R.id.surface_camera);
+        mPreviewSurface = findViewById(R.id.surface_camera);
         mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         mCameraManager.registerAvailabilityCallback(mAvailabilityCallback, mBackgroundHandler);
-        mPrevoewSurface.setSurfaceTextureListener(mSurfaceTextureListener);
+        mPreviewSurface.setSurfaceTextureListener(mSurfaceTextureListener);
     }
 
 
@@ -188,9 +188,11 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             Size[] outputSizes = map.getOutputSizes(ImageFormat.JPEG);
             //select the largest size
             Size largest = Collections.max(Arrays.asList(outputSizes), new CompareSizeByArea());
+            Log.d(TAG, "Surface size:" + mPreviewSurface.getHeight() + " * " + mPreviewSurface.getWidth());
             Log.d(TAG, "picture size:" + largest.getHeight() + " * " + largest.getWidth());
-            mPrevoewSurface.getSurfaceTexture().setDefaultBufferSize(largest.getWidth(), largest.getHeight());
-            mCameraSurface = new Surface(mPrevoewSurface.getSurfaceTexture());
+            mPreviewSurface.setAspectRatio(1080,1920);
+            mPreviewSurface.getSurfaceTexture().setDefaultBufferSize(largest.getWidth(), largest.getHeight());
+            mCameraSurface = new Surface(mPreviewSurface.getSurfaceTexture());
             mCameraManager.openCamera(String.valueOf(mCameraId), mStateCallBack, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();

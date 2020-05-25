@@ -20,11 +20,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private GLSurfaceView mGLSurfaceView;
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGLSurfaceView.setOnClickListener(this);
         mGLSurfaceView.setRenderer(new OpenGlRender());
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 
     @Override
     public void onClick(View view) {
