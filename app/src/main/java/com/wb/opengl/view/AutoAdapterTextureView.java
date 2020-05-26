@@ -2,7 +2,10 @@ package com.wb.opengl.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.TextureView;
+
+import com.wb.opengl.utils.LogUtils;
 
 /**
  * @author wangbo
@@ -43,15 +46,19 @@ public class AutoAdapterTextureView extends TextureView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
+        LogUtils.e("AutoAdapterTextureView","mRatioWidth:%d , mRatioHeight:%d",mRatioWidth,mRatioHeight);
+        LogUtils.e("AutoAdapterTextureView","width:%d,height:%d",width,height);
         if (0 == mRatioWidth || 0 == mRatioHeight) {
             setMeasuredDimension(width, height);
         } else {
-
-
-            if (width < height * mRatioWidth / mRatioHeight) {
-                setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
+            int widthCompare = height * mRatioWidth / mRatioHeight;
+            if (width < widthCompare) {
+                int result = width * mRatioHeight / mRatioWidth;
+                setMeasuredDimension(width, result);
+                LogUtils.e("AutoAdapterTextureView","width:,%d,result:%d",width,result);
             } else {
-                setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
+                setMeasuredDimension(widthCompare, height);
+                LogUtils.e("AutoAdapterTextureView","widthCompare:,%d,height:%d",widthCompare,height);
             }
         }
 

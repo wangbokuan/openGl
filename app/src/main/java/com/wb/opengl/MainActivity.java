@@ -1,5 +1,6 @@
 package com.wb.opengl;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -17,7 +18,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @DATE 20-3-17 14:39
  * E-Mail Address：android_wb@163.com
  */
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
     private GLSurfaceView mGLSurfaceView;
 
     @Override

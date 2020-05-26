@@ -2,6 +2,7 @@ package com.wb.opengl;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -21,12 +22,10 @@ import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
@@ -34,6 +33,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wb.opengl.utils.LogUtils;
 import com.wb.opengl.view.AutoAdapterTextureView;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
+public class CameraActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "CameraActivity";
 
     //initView
@@ -188,9 +188,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             Size[] outputSizes = map.getOutputSizes(ImageFormat.JPEG);
             //select the largest size
             Size largest = Collections.max(Arrays.asList(outputSizes), new CompareSizeByArea());
-            Log.d(TAG, "Surface size:" + mPreviewSurface.getHeight() + " * " + mPreviewSurface.getWidth());
-            Log.d(TAG, "picture size:" + largest.getHeight() + " * " + largest.getWidth());
-            mPreviewSurface.setAspectRatio(1080,1920);
+            LogUtils.d(TAG, "Camera Size-width:%d,height:%d",largest.getWidth() , largest.getHeight());
+            //相机的分辨率是针对手机横屏时的分辨率
+            mPreviewSurface.setAspectRatio(largest.getHeight(),largest.getWidth());
             mPreviewSurface.getSurfaceTexture().setDefaultBufferSize(largest.getWidth(), largest.getHeight());
             mCameraSurface = new Surface(mPreviewSurface.getSurfaceTexture());
             mCameraManager.openCamera(String.valueOf(mCameraId), mStateCallBack, mBackgroundHandler);
@@ -249,7 +249,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public int compare(Size lhs, Size rhs) {
-            return Long.signum((long) (lhs.getWidth() * lhs.getHeight()) - (long) rhs.getWidth() * rhs.getHeight());
+//            return Long.signum((long) (lhs.getWidth() * lhs.getHeight()) - (long) rhs.getWidth() * rhs.getHeight());
+            float lhs_result = (float)lhs.getWidth() * mPreviewSurface.getWidth() / (lhs.getHeight() * mPreviewSurface.getHeight());
+            float rhs_result = (float)rhs.getWidth() * mPreviewSurface.getWidth() / (rhs.getHeight() * mPreviewSurface.getHeight());
+            LogUtils.d("compare","lhs_result:%f,rhs_result:%f",lhs_result,rhs_result);
+
+            return (int) (Math.abs(lhs_result-1)-Math.abs(rhs_result-1));
         }
     }
 
